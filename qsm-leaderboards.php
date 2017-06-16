@@ -44,6 +44,7 @@ class QSM_Leaderboards {
 	function __construct() {
 		$this->load_dependencies();
 		$this->add_hooks();
+		$this->register_fields();
 		$this->check_license();
 	}
 
@@ -72,6 +73,35 @@ class QSM_Leaderboards {
 	public function add_hooks() {
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
+	}
+
+	/**
+	 * Sets up quiz settings for the addon
+	 *
+	 * @since 1.0.0
+	 */
+	public function register_fields() {
+		// Registers template setting
+		$field_array = array(
+			'id' => 'template',
+			'label' => 'Leaderboard Template',
+			'type' => 'editor',
+			'variables' => array(
+				'%QUIZ_NAME%',
+				'%FIRST_PLACE_NAME%',
+				'%FIRST_PLACE_SCORE%',
+				'%SECOND_PLACE_NAME%',
+				'%SECOND_PLACE_SCORE%',
+				'%THIRD_PLACE_NAME%',
+				'%THIRD_PLACE_SCORE%',
+				'%FOURTH_PLACE_NAME%',
+				'%FOURTH_PLACE_SCORE%',
+				'%FIFTH_PLACE_NAME%',
+				'%FIFTH_PLACE_SCORE%'
+			),
+			'default' => 0
+		);
+		$mlwQuizMasterNext->pluginHelper->register_quiz_setting( $field_array, 'quiz_leaderboards' );
 	}
 
 	/**
