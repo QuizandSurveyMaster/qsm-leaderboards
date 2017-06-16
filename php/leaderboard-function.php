@@ -1,69 +1,82 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Generates the leaderboads
  *
  * @since 1.0.0
+ * @param $quiz_id int The ID of the quiz
+ * @return string The HTML of the leaderboard
  */
-function qsm_addon_leaderboards_generate( $mlw_quiz_id ) {
+function qsm_addon_leaderboards_generate( $quiz_id ) {
+
+	// Globals
 	global $wpdb;
-	$mlw_quiz_options = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM " . $wpdb->prefix . "mlw_quizzes" . " WHERE quiz_id=%d AND deleted='0'", $mlw_quiz_id ) );
-	foreach($mlw_quiz_options as $mlw_eaches) {
-		$mlw_quiz_options = $mlw_eaches;
-		break;
-	}
-	$sql = "SELECT * FROM " . $wpdb->prefix . "mlw_results WHERE quiz_id=%d AND deleted='0'";
-	if ($mlw_quiz_options->system == 0)
-	{
+	global $mlwQuizMasterNext;
+
+	// Retrieve template, grading system, and name of quiz
+	$template = $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_leaderboards', 'template' );
+	$grade_system = $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_options', 'system' );
+	$quiz_name = $wpdb->get_var( $wpdb->prepare( "SELECT quiz_name FROM {$wpdb->prefix}mlw_quizzes WHERE deleted='0' AND quiz_id=%d", $quiz_id ) );
+
+	// Prepare SQL for results, then retrieve results
+	$sql = "SELECT * FROM {$wpdb->prefix}mlw_results WHERE quiz_id=%d AND deleted='0'";
+	if ( $grade_system == 0 ) {
 		$sql .= " ORDER BY correct_score DESC";
 	}
-	if ($mlw_quiz_options->system == 1)
-	{
+	if ( $grade_system == 1 ) {
 		$sql .= " ORDER BY point_score DESC";
 	}
 	$sql .= " LIMIT 10";
-	$mlw_result_data = $wpdb->get_results( $wpdb->prepare( $sql, $mlw_quiz_id ) );
+	$results = $wpdb->get_results( $wpdb->prepare( $sql, $quiz_id ) );
 
-	$mlw_quiz_leaderboard_display = $mlw_quiz_options->leaderboard_template;
-	$mlw_quiz_leaderboard_display = str_replace( "%QUIZ_NAME%" , $mlw_quiz_options->quiz_name, $mlw_quiz_leaderboard_display);
+	// Change variable to quiz name
+	$template = str_replace( "%QUIZ_NAME%" , $quiz_name, $template);
 
+	// Cycle through each result and use name/points for entry in leaderboard
 	$leader_count = 0;
-	foreach($mlw_result_data as $mlw_eaches) {
+	foreach( $results as $result ) {
 		$leader_count++;
-		if ($leader_count == 1) {$mlw_quiz_leaderboard_display = str_replace( "%FIRST_PLACE_NAME%" , $mlw_eaches->name, $mlw_quiz_leaderboard_display);}
-		if ($leader_count == 2) {$mlw_quiz_leaderboard_display = str_replace( "%SECOND_PLACE_NAME%" , $mlw_eaches->name, $mlw_quiz_leaderboard_display);}
-		if ($leader_count == 3) {$mlw_quiz_leaderboard_display = str_replace( "%THIRD_PLACE_NAME%" , $mlw_eaches->name, $mlw_quiz_leaderboard_display);}
-		if ($leader_count == 4) {$mlw_quiz_leaderboard_display = str_replace( "%FOURTH_PLACE_NAME%" , $mlw_eaches->name, $mlw_quiz_leaderboard_display);}
-		if ($leader_count == 5) {$mlw_quiz_leaderboard_display = str_replace( "%FIFTH_PLACE_NAME%" , $mlw_eaches->name, $mlw_quiz_leaderboard_display);}
-		if ($mlw_quiz_options->system == 0)
-		{
-			if ($leader_count == 1) {$mlw_quiz_leaderboard_display = str_replace( "%FIRST_PLACE_SCORE%" , $mlw_eaches->correct_score."%", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 2) {$mlw_quiz_leaderboard_display = str_replace( "%SECOND_PLACE_SCORE%" , $mlw_eaches->correct_score."%", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 3) {$mlw_quiz_leaderboard_display = str_replace( "%THIRD_PLACE_SCORE%" , $mlw_eaches->correct_score."%", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 4) {$mlw_quiz_leaderboard_display = str_replace( "%FOURTH_PLACE_SCORE%" , $mlw_eaches->correct_score."%", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 5) {$mlw_quiz_leaderboard_display = str_replace( "%FIFTH_PLACE_SCORE%" , $mlw_eaches->correct_score."%", $mlw_quiz_leaderboard_display);}
+
+		// Change name to quiz taker's name
+		if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_NAME%" , $result->name, $template);}
+
+		// Depending on grading system, use either score or points
+		if ( $grade_system == 0 ) {
+			if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+			if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+			if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+			if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+			if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , $result->correct_score . "%", $template);}
 		}
-		if ($mlw_quiz_options->system == 1)
-		{
-			if ($leader_count == 1) {$mlw_quiz_leaderboard_display = str_replace( "%FIRST_PLACE_SCORE%" , $mlw_eaches->point_score." Points", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 2) {$mlw_quiz_leaderboard_display = str_replace( "%SECOND_PLACE_SCORE%" , $mlw_eaches->point_score." Points", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 3) {$mlw_quiz_leaderboard_display = str_replace( "%THIRD_PLACE_SCORE%" , $mlw_eaches->point_score." Points", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 4) {$mlw_quiz_leaderboard_display = str_replace( "%FOURTH_PLACE_SCORE%" , $mlw_eaches->point_score." Points", $mlw_quiz_leaderboard_display);}
-			if ($leader_count == 5) {$mlw_quiz_leaderboard_display = str_replace( "%FIFTH_PLACE_SCORE%" , $mlw_eaches->point_score." Points", $mlw_quiz_leaderboard_display);}
+		if ( $grade_system == 1 ) {
+			if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+			if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+			if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+			if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+			if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , $result->point_score . " Points", $template);}
 		}
 	}
-	$mlw_quiz_leaderboard_display = str_replace( "%QUIZ_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FIRST_PLACE_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%SECOND_PLACE_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%THIRD_PLACE_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FOURTH_PLACE_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FIFTH_PLACE_NAME%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FIRST_PLACE_SCORE%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%SECOND_PLACE_SCORE%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%THIRD_PLACE_SCORE%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FOURTH_PLACE_SCORE%" , " ", $mlw_quiz_leaderboard_display);
-	$mlw_quiz_leaderboard_display = str_replace( "%FIFTH_PLACE_SCORE%" , " ", $mlw_quiz_leaderboard_display);
 
-	return $mlw_quiz_leaderboard_display;
+	// Remove all variables in case any were missed
+	$template = str_replace( "%QUIZ_NAME%", " ", $template );
+	$template = str_replace( "%FIRST_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%SECOND_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%THIRD_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FOURTH_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FIFTH_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FIRST_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%SECOND_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%THIRD_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%FOURTH_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%FIFTH_PLACE_SCORE%", " ", $template );
+
+	// Return template
+	return $template;
 }
 ?>
