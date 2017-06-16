@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: QSM - 
+ * Plugin Name: QSM -
  * Plugin URI:
  * Description:
  * Author:
@@ -54,6 +54,7 @@ class Plugin_Name {
     function __construct() {
       $this->load_dependencies();
       $this->add_hooks();
+			$this->check_license();
     }
 
     /**
@@ -83,6 +84,39 @@ class Plugin_Name {
       add_action( 'admin_init', 'qsm_addon_xxxxx_register_addon_settings_tabs' );
       add_filter( 'mlw_qmn_template_variable_results_page', 'qsm_addon_xxxxxx_my_variable', 10, 2 );
     }
+
+	/**
+	 * Checks license
+	 *
+	 * Checks to see if license is active and, if so, checks for updates
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	 public function check_license() {
+
+		if( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+			// load our custom updater
+			include( 'php/EDD_SL_Plugin_Updater.php' );
+		}
+
+	  // retrieve our license key from the DB
+	  $analysis_data = get_option( 'qsm_addon_analysis_settings', '' );
+	  if ( isset( $logic_data["license_key"] ) ) {
+	    $license_key = trim( $analysis_data["license_key"] );
+	  } else {
+	    $license_key = '';
+	  }
+
+	 	// setup the updater
+	 	$edd_updater = new EDD_SL_Plugin_Updater( 'https://quizandsurveymaster.com', __FILE__, array(
+	 			'version' 	=> $this->version, 				// current version number
+	 			'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
+	 			'item_name' => 'Leaderboards', 	// name of this plugin
+	 			'author' 	=> 'Frank Corso'  // author of this plugin
+	 		)
+	 	);
+	 }
 }
 
 /**
