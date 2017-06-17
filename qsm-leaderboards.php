@@ -5,10 +5,10 @@
  * Description: Adds some basic leaderboards to Quiz And Survey Master
  * Author: Frank Corso
  * Author URI: https://quizandsurveymaster.com
- * Version: 1.0.0
+ * Version: 1.0.1
  *
  * @author Frank Corso
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -29,7 +29,7 @@ class QSM_Leaderboards {
 	 * @var string
 	 * @since 1.0.0
 	*/
-	public $version = '1.0.0';
+	public $version = '1.0.1';
 
 	/**
 	 * Main Construct Function

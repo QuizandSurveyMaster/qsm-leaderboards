@@ -17,6 +17,7 @@ function qsm_addon_leaderboards_generate( $quiz_id ) {
 	$quiz_id = intval( $quiz_id );
 
 	// Retrieve template, grading system, and name of quiz
+	$mlwQuizMasterNext->pluginHelper->prepare_quiz( $quiz_id );
 	$template = $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_leaderboards', 'template' );
 	$grade_system = $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_options', 'system' );
 	$quiz_name = $wpdb->get_var( $wpdb->prepare( "SELECT quiz_name FROM {$wpdb->prefix}mlw_quizzes WHERE deleted='0' AND quiz_id=%d", $quiz_id ) );
