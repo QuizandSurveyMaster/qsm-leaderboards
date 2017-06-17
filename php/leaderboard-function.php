@@ -14,6 +14,7 @@ function qsm_addon_leaderboards_generate( $quiz_id ) {
 	// Globals
 	global $wpdb;
 	global $mlwQuizMasterNext;
+	$quiz_id = intval( $quiz_id );
 
 	// Retrieve template, grading system, and name of quiz
 	$template = $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_leaderboards', 'template' );
