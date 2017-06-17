@@ -74,6 +74,7 @@ class QSM_Leaderboards {
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
 		add_shortcode( 'qsm_leaderboard', 'qsm_addon_leaderboards_shortcode' );
+		add_action('widgets_init', create_function('', 'return register_widget("QSM_Leaderboards_Widget");') );
 	}
 
 	/**
