@@ -71,10 +71,21 @@ class QSM_Leaderboards {
 	*/
 	public function add_hooks() {
 		add_action( 'plugins_loaded',  array( $this, 'register_fields' ) );
-	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
-	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
+		add_action( 'init',  array( $this, 'backwards_compatibility' ) );
+		add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
+		add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
 		add_shortcode( 'qsm_leaderboard', 'qsm_addon_leaderboards_shortcode' );
 		add_action('widgets_init', create_function('', 'return register_widget("QSM_Leaderboards_Widget");') );
+	}
+
+	/**
+	 * Small fixes for using with older versions of QSM
+	 *
+	 * @since 1.0.0
+	 */
+	public function backwards_compatibility() {
+		remove_shortcode( 'mlw_quizmaster_leaderboard' );
+		add_shortcode( 'mlw_quizmaster_leaderboard', 'qsm_addon_leaderboards_shortcode' );
 	}
 
 	/**
