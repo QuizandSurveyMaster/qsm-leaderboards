@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Registers your tab in the addon  settings page
  *
- * @since 0.1.0
+ * @since 1.0.0
  * @return void
  */
 function qsm_addon_leaderboards_register_addon_settings_tabs() {
@@ -17,9 +17,8 @@ function qsm_addon_leaderboards_register_addon_settings_tabs() {
 /**
  * Generates the content for your addon settings tab
  *
- * @since 0.1.0
+ * @since 1.0.0
  * @return void
- * @todo Replace the xxxxx with your addon's name
  */
 function qsm_addon_leaderboard_addon_settings_tabs_content() {
 
@@ -72,7 +71,7 @@ function qsm_addon_leaderboard_addon_settings_tabs_content() {
         $response = wp_remote_post( 'http://quizandsurveymaster.com', array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
       }
     }
-    $mlwQuizMasterNext->alertManager->newAlert( 'Your settings has been saved successfully! You can now analyze your results on the Results page.', 'success' );
+    $mlwQuizMasterNext->alertManager->newAlert( 'Your settings has been saved successfully! You can now set up your leaderboards using the Leaderboards tab when editing your quiz or survey.', 'success' );
   }
 
   // Load settings
