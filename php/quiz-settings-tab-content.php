@@ -26,6 +26,7 @@ function qsm_addon_leaderboards_quiz_settings_tabs_content() {
 	global $mlwQuizMasterNext;
 	?>
 	<h3><?php _e( 'Template Variables', 'quiz-master-next' ); ?></h3>
+	<p>Use this shortcode to generate the leaderboard for this quiz: [qsm_leaderboard quiz=<?php echo intval( $_GET["quiz_id"] ); ?>]</p>
 	<table class="form-table">
 		<tr>
 			<td><strong>%FIRST_PLACE_NAME%</strong> - <?php _e("The name of the user who is in first place", 'quiz-master-next'); ?></td>
