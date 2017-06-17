@@ -44,7 +44,6 @@ class QSM_Leaderboards {
 	function __construct() {
 		$this->load_dependencies();
 		$this->add_hooks();
-		$this->register_fields();
 		$this->check_license();
 	}
 
@@ -71,8 +70,10 @@ class QSM_Leaderboards {
 	 * @return void
 	*/
 	public function add_hooks() {
+		add_action( 'plugins_loaded',  array( $this, 'register_fields' ) );
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
 	  add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
+		add_shortcode( 'qsm_leaderboard', 'qsm_addon_leaderboards_shortcode' );
 	}
 
 	/**
