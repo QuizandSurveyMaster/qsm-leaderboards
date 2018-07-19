@@ -70,7 +70,7 @@ class QSM_Leaderboards {
 	 * @return void
 	*/
 	public function add_hooks() {
-		add_action( 'plugins_loaded',  array( $this, 'register_fields' ) );
+		add_action( 'init',  array( $this, 'register_fields' ) );
 		add_action( 'init',  array( $this, 'backwards_compatibility' ) );
 		add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
 		add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
@@ -96,29 +96,26 @@ class QSM_Leaderboards {
 	public function register_fields() {
 		global $mlwQuizMasterNext;
 
-		// Registers template setting if it doesn't already exist
-		if ( ! $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_leaderboards', 'template' ) ) {
-			$field_array = array(
-				'id' => 'template',
-				'label' => 'Leaderboard Template',
-				'type' => 'editor',
-				'variables' => array(
-					'%QUIZ_NAME%',
-					'%FIRST_PLACE_NAME%',
-					'%FIRST_PLACE_SCORE%',
-					'%SECOND_PLACE_NAME%',
-					'%SECOND_PLACE_SCORE%',
-					'%THIRD_PLACE_NAME%',
-					'%THIRD_PLACE_SCORE%',
-					'%FOURTH_PLACE_NAME%',
-					'%FOURTH_PLACE_SCORE%',
-					'%FIFTH_PLACE_NAME%',
-					'%FIFTH_PLACE_SCORE%'
-				),
-				'default' => 0
-			);
-			$mlwQuizMasterNext->pluginHelper->register_quiz_setting( $field_array, 'quiz_leaderboards' );
-		}
+		$field_array = array(
+			'id'        => 'template',
+			'label'     => 'Leaderboard Template',
+			'type'      => 'editor',
+			'variables' => array(
+				'%QUIZ_NAME%',
+				'%FIRST_PLACE_NAME%',
+				'%FIRST_PLACE_SCORE%',
+				'%SECOND_PLACE_NAME%',
+				'%SECOND_PLACE_SCORE%',
+				'%THIRD_PLACE_NAME%',
+				'%THIRD_PLACE_SCORE%',
+				'%FOURTH_PLACE_NAME%',
+				'%FOURTH_PLACE_SCORE%',
+				'%FIFTH_PLACE_NAME%',
+				'%FIFTH_PLACE_SCORE%',
+			),
+			'default' => 0,
+		);
+		$mlwQuizMasterNext->pluginHelper->register_quiz_setting( $field_array, 'quiz_leaderboards' );
 	}
 
 	/**
@@ -164,7 +161,7 @@ class QSM_Leaderboards {
 function qsm_addon_leaderboard_load() {
 	// Make sure QSM is active
 	if ( class_exists( 'MLWQuizMasterNext' ) ) {
-		$plugin_name = new QSM_Leaderboards();
+		$qsm_leaderboards = new QSM_Leaderboards();
 	} else {
 		add_action( 'admin_notices', 'qsm_addon_leaderboard_missing_qsm' );
 	}
@@ -175,9 +172,8 @@ add_action( 'plugins_loaded', 'qsm_addon_leaderboard_load' );
  * Display notice if Quiz And Survey Master isn't installed
  *
  * @since 1.0.0
- * @return string The notice to display
  */
 function qsm_addon_leaderboard_missing_qsm() {
-  echo '<div class="error"><p>QSM - Leaderboards requires Quiz And Survey Master. Please install and activate the Quiz And Survey Master plugin.</p></div>';
+	echo '<div class="error"><p>QSM - Leaderboards requires Quiz And Survey Master. Please install and activate the Quiz And Survey Master plugin.</p></div>';
 }
 ?>
