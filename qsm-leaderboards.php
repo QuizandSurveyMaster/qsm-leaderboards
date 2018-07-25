@@ -5,13 +5,20 @@
  * Description: Adds some basic leaderboards to Quiz And Survey Master
  * Author: Frank Corso
  * Author URI: https://quizandsurveymaster.com
- * Version: 1.0.1
+ * Version: 1.0.2
  *
  * @author Frank Corso
- * @version 1.0.1
+ * @version 1.0.2
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// If the PHP version is less then our minimum requirements, end.
+if ( version_compare( PHP_VERSION, '5.4.0', '<' ) ) {
+	return;
+}
 
 
 /**
@@ -20,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * When loaded, it loads the included plugin files and add functions to hooks or filters. The class also handles the admin menu
  *
  * @since 1.0.0
-*/
+ */
 class QSM_Leaderboards {
 
 	/**
@@ -28,8 +35,8 @@ class QSM_Leaderboards {
 	 *
 	 * @var string
 	 * @since 1.0.0
-	*/
-	public $version = '1.0.1';
+	 */
+	public $version = '1.0.2';
 
 	/**
 	 * Main Construct Function
@@ -40,8 +47,8 @@ class QSM_Leaderboards {
 	 * @uses QSM_Leaderboards::load_dependencies() Loads required filed
 	 * @uses QSM_Leaderboards::add_hooks() Adds actions to hooks and filters
 	 * @return void
-	*/
-	function __construct() {
+	 */
+	public function __construct() {
 		$this->load_dependencies();
 		$this->add_hooks();
 		$this->check_license();
@@ -52,13 +59,13 @@ class QSM_Leaderboards {
 	 *
 	 * @since 1.0.0
 	 * @return void
-	*/
+	 */
 	public function load_dependencies() {
-		include( "php/addon-settings-tab-content.php" );
-		include( "php/quiz-settings-tab-content.php" );
-		include( "php/leaderboard-function.php" );
-		include( "php/shortcodes.php" );
-		include( "php/widgets.php" );
+		include 'php/addon-settings-tab-content.php';
+		include 'php/quiz-settings-tab-content.php';
+		include 'php/leaderboard-function.php';
+		include 'php/shortcodes.php';
+		include 'php/widgets.php';
 	}
 
 	/**
@@ -68,14 +75,16 @@ class QSM_Leaderboards {
 	 *
 	 * @since 1.0.0
 	 * @return void
-	*/
+	 */
 	public function add_hooks() {
-		add_action( 'plugins_loaded',  array( $this, 'register_fields' ) );
-		add_action( 'init',  array( $this, 'backwards_compatibility' ) );
+		add_action( 'init', array( $this, 'register_fields' ) );
+		add_action( 'init', array( $this, 'backwards_compatibility' ) );
 		add_action( 'admin_init', 'qsm_addon_leaderboards_register_quiz_settings_tabs' );
 		add_action( 'admin_init', 'qsm_addon_leaderboards_register_addon_settings_tabs' );
 		add_shortcode( 'qsm_leaderboard', 'qsm_addon_leaderboards_shortcode' );
-		add_action('widgets_init', create_function('', 'return register_widget("QSM_Leaderboards_Widget");') );
+		add_action( 'widgets_init', function() {
+			return register_widget( 'QSM_Leaderboards_Widget' );
+		});
 	}
 
 	/**
@@ -96,29 +105,26 @@ class QSM_Leaderboards {
 	public function register_fields() {
 		global $mlwQuizMasterNext;
 
-		// Registers template setting if it doesn't already exist
-		if ( ! $mlwQuizMasterNext->pluginHelper->get_section_setting( 'quiz_leaderboards', 'template' ) ) {
-			$field_array = array(
-				'id' => 'template',
-				'label' => 'Leaderboard Template',
-				'type' => 'editor',
-				'variables' => array(
-					'%QUIZ_NAME%',
-					'%FIRST_PLACE_NAME%',
-					'%FIRST_PLACE_SCORE%',
-					'%SECOND_PLACE_NAME%',
-					'%SECOND_PLACE_SCORE%',
-					'%THIRD_PLACE_NAME%',
-					'%THIRD_PLACE_SCORE%',
-					'%FOURTH_PLACE_NAME%',
-					'%FOURTH_PLACE_SCORE%',
-					'%FIFTH_PLACE_NAME%',
-					'%FIFTH_PLACE_SCORE%'
-				),
-				'default' => 0
-			);
-			$mlwQuizMasterNext->pluginHelper->register_quiz_setting( $field_array, 'quiz_leaderboards' );
-		}
+		$field_array = array(
+			'id'        => 'template',
+			'label'     => 'Leaderboard Template',
+			'type'      => 'editor',
+			'variables' => array(
+				'%QUIZ_NAME%',
+				'%FIRST_PLACE_NAME%',
+				'%FIRST_PLACE_SCORE%',
+				'%SECOND_PLACE_NAME%',
+				'%SECOND_PLACE_SCORE%',
+				'%THIRD_PLACE_NAME%',
+				'%THIRD_PLACE_SCORE%',
+				'%FOURTH_PLACE_NAME%',
+				'%FOURTH_PLACE_SCORE%',
+				'%FIFTH_PLACE_NAME%',
+				'%FIFTH_PLACE_SCORE%',
+			),
+			'default' => 0,
+		);
+		$mlwQuizMasterNext->pluginHelper->register_quiz_setting( $field_array, 'quiz_leaderboards' );
 	}
 
 	/**
@@ -128,30 +134,29 @@ class QSM_Leaderboards {
 	 *
 	 * @since 1.0.0
 	 * @return void
-	*/
+	 */
 	public function check_license() {
 
-	if( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-		// load our custom updater
-		include( 'php/EDD_SL_Plugin_Updater.php' );
-	}
+		if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+			// Loads our custom updater.
+			include 'php/EDD_SL_Plugin_Updater.php';
+		}
 
-	// retrieve our license key from the DB
-	$leaderboard_data = get_option( 'qsm_addon_leaderboard_settings', '' );
-	if ( isset( $leaderboard_data["license_key"] ) ) {
-		$license_key = trim( $leaderboard_data["license_key"] );
-	} else {
-		$license_key = '';
-	}
+		// Retrieves our license key from the DB.
+		$leaderboard_data = get_option( 'qsm_addon_leaderboard_settings', '' );
+		if ( isset( $leaderboard_data['license_key'] ) ) {
+			$license_key = trim( $leaderboard_data['license_key'] );
+		} else {
+			$license_key = '';
+		}
 
-		// setup the updater
+		// Sets up the updater.
 		$edd_updater = new EDD_SL_Plugin_Updater( 'https://quizandsurveymaster.com', __FILE__, array(
-				'version' 	=> $this->version, 				// current version number
-				'license' 	=> $license_key, 		// license key (used get_option above to retrieve from DB)
-				'item_name' => 'Leaderboards', 	// name of this plugin
-				'author' 	=> 'Frank Corso'  // author of this plugin
-			)
-		);
+			'version'   => $this->version,
+			'license'   => $license_key,
+			'item_name' => 'Leaderboards',
+			'author'    => 'Frank Corso',
+		));
 	}
 }
 
@@ -162,9 +167,9 @@ class QSM_Leaderboards {
  * @return void
  */
 function qsm_addon_leaderboard_load() {
-	// Make sure QSM is active
+	// Makes sure QSM is active.
 	if ( class_exists( 'MLWQuizMasterNext' ) ) {
-		$plugin_name = new QSM_Leaderboards();
+		$qsm_leaderboards = new QSM_Leaderboards();
 	} else {
 		add_action( 'admin_notices', 'qsm_addon_leaderboard_missing_qsm' );
 	}
@@ -175,9 +180,7 @@ add_action( 'plugins_loaded', 'qsm_addon_leaderboard_load' );
  * Display notice if Quiz And Survey Master isn't installed
  *
  * @since 1.0.0
- * @return string The notice to display
  */
 function qsm_addon_leaderboard_missing_qsm() {
-  echo '<div class="error"><p>QSM - Leaderboards requires Quiz And Survey Master. Please install and activate the Quiz And Survey Master plugin.</p></div>';
+	echo '<div class="error"><p>QSM - Leaderboards requires Quiz And Survey Master. Please install and activate the Quiz And Survey Master plugin.</p></div>';
 }
-?>
