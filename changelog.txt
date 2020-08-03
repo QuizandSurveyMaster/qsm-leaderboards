@@ -1,0 +1,16 @@
+<h3>1.0.3 (July 21, 2020)</h3>
+<ul>
+ 	<li>Enhancement: Added QSM CORE 7.0.0 support.</li>
+</ul>
+<h3>1.0.2 (July 25, 2018)</h3>
+<ul>
+ 	<li>Closed bug: Settings missing from the \"Leaderboards\" tab (<a href=\"https://github.com/QuizandSurveyMaster/qsm-leaderboards/issues/1\" target=\"_blank\" rel=\"noopener\">Issue #1</a>)</li>
+</ul>
+<h3>1.0.1 (06/17/17)</h3>
+<ul>
+ 	<li>Fixes minor bug preventing the shortcode from working on certain pages</li>
+</ul>
+<h3>1.0.0 (06/17/17)</h3>
+<ul>
+ 	<li>Initial Release</li>
+</ul>

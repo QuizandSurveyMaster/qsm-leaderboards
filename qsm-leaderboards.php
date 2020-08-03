@@ -3,12 +3,12 @@
  * Plugin Name: QSM - Leaderboards
  * Plugin URI: https://quizandsurveymaster.com
  * Description: Adds some basic leaderboards to Quiz And Survey Master
- * Author: Frank Corso
+ * Author: QSM Team
  * Author URI: https://quizandsurveymaster.com
- * Version: 1.0.2
+ * Version: 1.0.3
  *
- * @author Frank Corso
- * @version 1.0.2
+ * @author QSM Team
+ * @version 1.0.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,7 +36,7 @@ class QSM_Leaderboards {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	public $version = '1.0.2';
+	public $version = '1.0.3';
 
 	/**
 	 * Main Construct Function
