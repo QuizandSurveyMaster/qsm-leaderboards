@@ -111,8 +111,16 @@ class QSM_Leaderboards {
 			'type'      => 'editor',
 			'variables' => array(
 				'%QUIZ_NAME%',
-				'%QUIZ_USER_NAME%',
-				'%QUIZ_USER_SCORE%',
+				'%FIRST_PLACE_NAME%',
+				'%FIRST_PLACE_SCORE%',
+				'%SECOND_PLACE_NAME%',
+				'%SECOND_PLACE_SCORE%',
+				'%THIRD_PLACE_NAME%',
+				'%THIRD_PLACE_SCORE%',
+				'%FOURTH_PLACE_NAME%',
+				'%FOURTH_PLACE_SCORE%',
+				'%FIFTH_PLACE_NAME%',
+				'%FIFTH_PLACE_SCORE%',
 			),
 			'default' => 0,
 		);
