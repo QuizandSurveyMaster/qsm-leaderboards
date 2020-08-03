@@ -26,37 +26,17 @@ function qsm_addon_leaderboards_quiz_settings_tabs_content() {
 	global $mlwQuizMasterNext;
 	?>
 	<h3><?php _e( 'Template Variables', 'quiz-master-next' ); ?></h3>
-	<p>Use this shortcode to generate the leaderboard for this quiz: [qsm_leaderboard quiz=<?php echo intval( $_GET["quiz_id"] ); ?>]</p>
+	<p>Use this shortcode to generate the leaderboard for this quiz: [qsm_leaderboard quiz=<?php echo intval( $_GET["quiz_id"] ); ?> top_users=5]</p>
 	<table class="form-table">
 		<tr>
-			<td><strong>%FIRST_PLACE_NAME%</strong> - <?php _e("The name of the user who is in first place", 'quiz-master-next'); ?></td>
-			<td><strong>%FIRST_PLACE_SCORE%</strong> - <?php _e("The score from the first place's quiz", 'quiz-master-next'); ?></td>
-		</tr>
-
-		<tr>
-			<td><strong>%SECOND_PLACE_NAME%</strong> - <?php _e("The name of the user who is in second place", 'quiz-master-next'); ?></td>
-			<td><strong>%SECOND_PLACE_SCORE%</strong> - <?php _e("The score from the second place's quiz", 'quiz-master-next'); ?></td>
-		</tr>
-
-		<tr>
-			<td><strong>%THIRD_PLACE_NAME%</strong> - <?php _e('The name of the user who is in third place', 'quiz-master-next'); ?></td>
-			<td><strong>%THIRD_PLACE_SCORE%</strong> - <?php _e("The score from the third place's quiz", 'quiz-master-next'); ?></td>
-		</tr>
-
-		<tr>
-			<td><strong>%FOURTH_PLACE_NAME%</strong> - <?php _e('The name of the user who is in fourth place', 'quiz-master-next'); ?></td>
-			<td><strong>%FOURTH_PLACE_SCORE%</strong> - <?php _e("The score from the fourth place's quiz", 'quiz-master-next'); ?></td>
-		</tr>
-
-		<tr>
-			<td><strong>%FIFTH_PLACE_NAME%</strong> - <?php _e('The name of the user who is in fifth place', 'quiz-master-next'); ?></td>
-			<td><strong>%FIFTH_PLACE_SCORE%</strong> - <?php _e("The score from the fifth place's quiz", 'quiz-master-next'); ?></td>
+			<td><strong>%QUIZ_USER_NAME%</strong> - <?php _e("The name of the user", 'quiz-master-next'); ?></td>
+			<td><strong>%QUIZ_USER_SCORE%</strong> - <?php _e("The user score from quiz", 'quiz-master-next'); ?></td>
 		</tr>
 
 		<tr>
 			<td><strong>%QUIZ_NAME%</strong> - <?php _e("The name of the quiz", 'quiz-master-next'); ?></td>
 		</tr>
-	</table>
+	</table> 
 	<?php
 	$mlwQuizMasterNext->pluginHelper->generate_settings_section( 'quiz_leaderboards' );
 }
