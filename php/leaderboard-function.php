@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int $quiz_id int The ID of the quiz.
  * @return string The HTML of the leaderboard
  */
-function qsm_addon_leaderboards_generate( $quiz_id, $top_users ) {
+function qsm_addon_leaderboards_generate( $quiz_id ) {
 
 	global $wpdb;
 	global $mlwQuizMasterNext;
@@ -42,7 +42,7 @@ function qsm_addon_leaderboards_generate( $quiz_id, $top_users ) {
                 $sql .= ' ORDER BY correct_score, point_score DESC';
             }
         }	
-	$sql .= ' LIMIT '.$top_users;        
+	$sql .= ' LIMIT 10';        
 	$results = $wpdb->get_results( $wpdb->prepare( $sql, $quiz_id ) );
 
 	// Changes variable to quiz name.
@@ -50,61 +50,62 @@ function qsm_addon_leaderboards_generate( $quiz_id, $top_users ) {
 
 	// Cycles through each result and use name/points for entry in leaderboard.
 	$leader_count = 0;
-	$users_names_score = '';
-	$name_pos = strpos($template,'%QUIZ_USER_NAME%');
-	$score_post = strpos($template,'%QUIZ_USER_SCORE%');
-	if($name_pos < $score_post){
-		$inner_text = get_string_between($template,'%QUIZ_USER_NAME%','%QUIZ_USER_SCORE%');
-	}else{
-		$inner_text = get_string_between($template,'%QUIZ_USER_SCORE%','%QUIZ_USER_NAME%');
-	}
 	foreach ( $results as $result ) {
 		$leader_count++;
 
 		// Changes name to quiz taker's name.
-		$users_names_score .= $result->name.$inner_text;
+		if ( $leader_count == 1 ) {$template = str_replace( "%FIRST_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_NAME%" , $result->name, $template);}
+		if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_NAME%" , $result->name, $template);}
 
 		// Depending on grading system, use either score or points.
-                if( !empty( $form_type ) && ($form_type == 1 || $form_type == 2) ){                                	
-										$users_names_score .= "Not graded";
+                if( !empty( $form_type ) && ($form_type == 1 || $form_type == 2) ){                                
+                    if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , "Not graded", $template);}
+                    if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , "Not graded", $template);}
+                    if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , "Not graded", $template);}
+                    if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , "Not graded", $template);}
+                    if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , "Not graded", $template);}		
                 }else{
                     if ( $grade_system == 0 ) {
-											$users_names_score .= $result->correct_score . "%";
+                        if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+                        if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+                        if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+                        if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , $result->correct_score . "%", $template);}
+                        if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , $result->correct_score . "%", $template);}
                     }
                     if ( $grade_system == 1 ) {
-												$users_names_score .= $result->point_score . " Points";
+                        if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+                        if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+                        if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+                        if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , $result->point_score . " Points", $template);}
+                        if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , $result->point_score . " Points", $template);}
                     }
                     if ( $grade_system == 3 ) {
-												$users_names_score .= $result->correct_score . "% OR " . $result->point_score . " Points";
+                        if ($leader_count == 1) {$template = str_replace( "%FIRST_PLACE_SCORE%" , $result->correct_score . "% OR " . $result->point_score . " Points", $template);}
+                        if ($leader_count == 2) {$template = str_replace( "%SECOND_PLACE_SCORE%" , $result->correct_score . "% OR " . $result->point_score . " Points", $template);}
+                        if ($leader_count == 3) {$template = str_replace( "%THIRD_PLACE_SCORE%" , $result->correct_score . "% OR " . $result->point_score . " Points", $template);}
+                        if ($leader_count == 4) {$template = str_replace( "%FOURTH_PLACE_SCORE%" , $result->correct_score . "% OR " . $result->point_score . " Points", $template);}
+                        if ($leader_count == 5) {$template = str_replace( "%FIFTH_PLACE_SCORE%" , $result->correct_score . "% OR " . $result->point_score . " Points", $template);}
                     }
-                }	
-								$users_names_score .= '<br>';	
+                }		
 	}
-	if($name_pos < $score_post){
-		$template = str_replace( "%QUIZ_USER_NAME%".$inner_text.'%QUIZ_USER_SCORE%', $users_names_score, $template );
-	}else{
-		str_replace( "%QUIZ_USER_SCORE%".$inner_text.'%QUIZ_USER_NAME%', $users_names_score, $template );
-	}
-	$template = str_replace( "%QUIZ_USER_NAME%", $users_names_score, $template );
+
 	// Removes all variables in case any were missed.
 	$template = str_replace( "%QUIZ_NAME%", " ", $template );
-	$template = str_replace( "%QUIZ_USER_NAME%", " ", $template );
-	$template = str_replace( "%QUIZ_USER_SCORE%", " ", $template );
+	$template = str_replace( "%FIRST_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%SECOND_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%THIRD_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FOURTH_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FIFTH_PLACE_NAME%", " ", $template );
+	$template = str_replace( "%FIRST_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%SECOND_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%THIRD_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%FOURTH_PLACE_SCORE%", " ", $template );
+	$template = str_replace( "%FIFTH_PLACE_SCORE%", " ", $template );
 
 	// Return template
 	return wpautop( $template );
 }
-
-/**
- * Get all text between QUIZ_USER_NAME and QUIZ_USER_SCORE from template
- */
-function get_string_between($string, $start, $end){
-    $string = ' ' . $string;
-    $ini = strpos($string, $start);
-    if ($ini == 0) return '';
-    $ini += strlen($start);
-    $len = strpos($string, $end, $ini) - $ini;
-    return substr($string, $ini, $len);
-}
-
 ?>
