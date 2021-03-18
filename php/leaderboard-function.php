@@ -39,7 +39,7 @@ function qsm_addon_leaderboards_generate( $quiz_id ) {
                     $sql .= ' ORDER BY point_score DESC';
             }
             if( 3 == $grade_system ){
-                $sql .= ' ORDER BY correct_score, point_score DESC';
+                $sql .= ' ORDER BY correct_score DESC, point_score DESC';
             }
         }	
 	$sql .= ' LIMIT 10';        
