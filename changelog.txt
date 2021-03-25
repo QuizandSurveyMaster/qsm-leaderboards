@@ -1,3 +1,7 @@
+<h3>1.0.4 (Mar 25, 2021)</h3>
+<ul>
+ 	<li>Bug: Fixed wrong ranking for Points and Score type quizzes.</li>
+</ul>
 <h3>1.0.3 (July 21, 2020)</h3>
 <ul>
  	<li>Enhancement: Added QSM CORE 7.0.0 support.</li>

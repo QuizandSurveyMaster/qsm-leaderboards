@@ -5,10 +5,10 @@
  * Description: Adds some basic leaderboards to Quiz And Survey Master
  * Author: QSM Team
  * Author URI: https://quizandsurveymaster.com
- * Version: 1.0.3
+ * Version: 1.0.4
  *
  * @author QSM Team
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,7 +36,7 @@ class QSM_Leaderboards {
 	 * @var string
 	 * @since 1.0.0
 	 */
-	public $version = '1.0.3';
+	public $version = '1.0.4';
 
 	/**
 	 * Main Construct Function
